@@ -1,17 +1,17 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-  <title>Licznik odwiedzin</title>
+  <title>Visit Counter</title>
 </head>
 <body>
-<h1>Licznik odwiedzin</h1>
+<h1>Visit Counter</h1>
 
-<p>Ilosc odwiedzin w tej sesji
+<p>Visits in your session:
   <%=
 request.getAttribute("VisitOneSession")
 %>
 </p>
-<p>Ilosc odwiedzin w calej aplikacji <%=
+<p>Numbers of visits global <%=
 application.getAttribute("VisitGlobal")
 %>
 </p>
