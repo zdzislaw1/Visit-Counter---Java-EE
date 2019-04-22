@@ -12,7 +12,7 @@ request.getAttribute("VisitOneSession")
 %>
 </p>
 <p>Ilosc odwiedzin w calej aplikacji <%=
-application.getAttribute("VisitTogether")
+application.getAttribute("VisitGlobal")
 %>
 </p>
 

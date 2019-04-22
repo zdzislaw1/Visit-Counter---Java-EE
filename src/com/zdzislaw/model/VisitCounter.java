@@ -1,41 +1,55 @@
 package com.zdzislaw.model;
 
+import java.lang.reflect.AnnotatedType;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.servlet.http.HttpSession;
 
 public class VisitCounter {
-    private int visitTogether;
-    int visitSession;
-    Map<HttpSession, Integer> sessions = new HashMap();
-     {
-        setVisitTogether(0);
-        visitSession=0;
-    }
+    private static AtomicInteger visitGlobal;
+    private AtomicInteger visitSession;
 
-    public int getVisitTogether() {
-        return this.visitTogether;
-    }
+     ConcurrentHashMap<String, AtomicInteger> sessions=new ConcurrentHashMap<>();
 
-    public void setVisitTogether(int visitTogether) {
-        this.visitTogether=visitTogether;
-    }
 
     public VisitCounter() {
+        visitGlobal=new AtomicInteger(0);
+        visitSession=new AtomicInteger(1);
     }
 
-    public void newSession(HttpSession session) {
-        sessions.put(session, 1);
+    public void setVisitGlobal(int visitGlobal) {
+        this.visitGlobal.set(visitGlobal);
     }
 
-    public void addOneToSession(HttpSession session) {
-        visitSession = (Integer)sessions.get(session) + 1;
-        this.sessions.put(session, visitSession);
+    public AtomicInteger getVisitGlobal() {
+        return visitGlobal;
     }
 
-    public int getNumberOfVisitInOneSession(HttpSession session) {
-        int numberOfVisitInOneSession = (Integer)sessions.get(session);
-        return numberOfVisitInOneSession;
+    public void setVisitSession(int visitSession) {
+        this.visitSession.set(visitSession);
     }
+
+    public AtomicInteger getVisitSession(String sessionId) {
+        return sessions.get(sessionId);
+    }
+
+
+
+
+    public void newSession(String sessionId) {
+        sessions.put(sessionId, new AtomicInteger(1));
+    }
+
+    public void incrementSession(String sessionId) {
+        setVisitSession (sessions.get(sessionId).incrementAndGet());
+
+        sessions.put(sessionId, sessions.get(sessionId));
+    }
+    public void incrementGlobalVisit(){
+        visitGlobal.getAndIncrement();
+    }
+
+
 }
