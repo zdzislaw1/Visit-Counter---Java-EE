@@ -15,23 +15,29 @@ import javax.servlet.http.HttpSession;
         urlPatterns = {"/"}
 )
 public class Servlet extends HttpServlet {
-    VisitCounter vc = new VisitCounter();
-    public Servlet() {
-    }
+
+        VisitCounter vc = new VisitCounter();
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         String sessionId=session.getId();
 
         if (session.isNew()) {
-            vc.newSession(session);
+            vc.newSession(sessionId);
         } else {
-            vc.addOneToSession(session);
+            sessionId=session.getId();
+            vc.incrementSession(sessionId);
         }
-        System.out.printf("Session ID - %s ::: %d , global ::: %d \n",sessionId, vc.getNumberOfVisitInOneSession(session), vc.getVisitTogether());
-        getServletContext().setAttribute("VisitTogether", vc.getVisitTogether());
-        request.setAttribute("VisitOneSession", vc.getNumberOfVisitInOneSession(session));
-        vc.setVisitTogether(vc.getVisitTogether() + 1);
+        vc.incrementGlobalVisit();
+
+
+
+        getServletContext().setAttribute("VisitGlobal", vc.getVisitGlobal());
+        request.setAttribute("VisitOneSession", vc.getVisitSession(sessionId));
+
+        System.out.println("Session Id: " + sessionId + " --- " + "session_nr" + " - " + vc.getVisitSession(sessionId) + "---" + " global_visit" + " - " +vc.getVisitGlobal() );
+
+
         request.getRequestDispatcher("index.jsp").forward(request, response);
     }
 }
